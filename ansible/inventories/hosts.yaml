@@ -1,0 +1,12 @@
+all:
+  children:
+    opensearch:
+      hosts:
+        "34.205.247.198":
+        "35.175.116.200":
+        "44.201.14.129":
+      vars:
+        ansible_ssh_private_key_file: ~/.ssh/rsa
+        ansible_ssh_user: ubuntu
+        host_key_checking: false
+        ansible_ssh_common_args: -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no

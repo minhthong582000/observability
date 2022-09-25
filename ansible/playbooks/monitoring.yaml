@@ -1,0 +1,10 @@
+---
+# file: site.yml
+- name: ensure common things are installed/configured
+  become: true
+  hosts: opensearch
+  roles:
+    - role: ../roles/common
+      tags: common
+    - role: ../roles/docker
+      tags: docker

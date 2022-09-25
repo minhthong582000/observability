@@ -1,0 +1,7 @@
+## Docker
+docker_edition: "ce"
+docker_package: "docker-{{ docker_edition }}"
+docker_package_state: present
+
+# Docker daemon options as a dict
+docker_daemon_options: {}
