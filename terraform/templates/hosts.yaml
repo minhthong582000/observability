@@ -7,22 +7,15 @@ opensearch:
   children:
     os-cluster:
       hosts:
-        os0:
-          ansible_host: 44.211.69.70
-          ip: 172.31.82.112
-          roles: data,master
-        os1:
-          ansible_host: 52.54.231.134
-          ip: 172.31.93.190
-          roles: data,ingest
-        os2:
-          ansible_host: 3.87.184.138
-          ip: 172.31.93.104
-          roles: data,ingest
+%{ for i, val in instance ~}
+        os${i}:
+          ansible_host: ${val.public_ip}
+          ip: ${val.private_ip}
+          roles: ${val.roles}
+%{ endfor ~}
     master:
       hosts:
         os0: {}
     dashboards:
       hosts:
         os0: {}
-
