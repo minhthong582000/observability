@@ -1,0 +1,21 @@
+opensearch:
+  vars:
+    ansible_ssh_private_key_file: ~/.ssh/rsa
+    ansible_ssh_user: ubuntu
+    host_key_checking: false
+    ansible_ssh_common_args: -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no
+  children:
+    os-cluster:
+      hosts:
+%{ for i, val in instance ~}
+        os${i}:
+          ansible_host: ${val.public_ip}
+          ip: ${val.private_ip}
+          roles: ${val.roles}
+%{ endfor ~}
+    master:
+      hosts:
+        os0: {}
+    dashboards:
+      hosts:
+        os0: {}

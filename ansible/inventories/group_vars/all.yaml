@@ -1,0 +1,8 @@
+---
+# defaults file for common
+timezone: UTC
+
+## Proxy
+http_proxy:
+https_proxy:
+no_proxy:

@@ -1,0 +1,39 @@
+---
+# tasks file for common
+- name: Set timezone to "{{ timezone }}"
+  timezone:
+    name: "{{ timezone }}"
+
+- name: Ensure common packages are installed | Debian
+  block:
+    - name: Install necessary packages into Debian like system
+      apt:
+        name:
+          - git
+          - curl
+          - wget
+          - net-tools
+          - unzip
+          - htop
+          - iftop
+          - iotop
+        state: present
+        update_cache: yes
+        cache_valid_time: 3600
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: Ensure common packages are installed | Redhat
+  yum:
+    name:
+      - git
+      - curl
+      - wget
+      - net-tools
+      - bind-utils
+      - unzip
+      - htop
+      - iftop
+      - iotop
+    state: present
+    update_cache: yes
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'

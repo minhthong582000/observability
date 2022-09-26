@@ -1,0 +1,26 @@
+---
+# file: site.yml
+# - name: Ensure common things are installed/configured
+#   become: true
+#   hosts: all
+#   roles:
+#     - role: ../roles/common
+#       tags: common
+#     - role: ../roles/docker
+#       tags: docker
+
+- name: Opensearch installation & configuration
+  hosts: os-cluster
+  gather_facts: true
+  become: true
+  roles:
+    - role: ../roles/logging/opensearch/opensearch
+      tags: opensearch
+
+- name: Opensearch dashboards installation & configuration
+  hosts: dashboards
+  gather_facts: true
+  become: true
+  roles:
+    - role: ../roles/logging/opensearch/dashboards
+      tags: opensearch
