@@ -4,17 +4,17 @@
   command: /bin/true
   notify:
     - Docker | reload systemd
-    - Docker | reload docker
+    - Docker | restart docker
     - Docker | wait for docker
 
 - name: Docker | reload systemd
   systemd:
     daemon_reload: true
 
-- name: Docker | reload docker
+- name: Docker | restart docker
   service:
     name: docker
-    state: "{{ docker_restart_handler_state }}"
+    state: restarted
 
 - name: Docker | wait for docker
   command: "/usr/bin/docker images"

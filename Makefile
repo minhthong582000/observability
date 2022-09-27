@@ -1,13 +1,16 @@
 .POSIX:
 .PHONY: *
 
-default: terraform ansible
+default: terraform wait_for_instances_startup ansible
 
 ansible:
 	make -C ansible
 
 terraform:
 	make -C terraform
+
+wait_for_instances_startup:
+	sleep 10
 
 clean:
 	rm -rf /tmp/opensearch-nodecerts

@@ -1,16 +1,6 @@
 ---
 # tasks file for ansible/roles/logging/docker-logging-driver
-- name: Copy Docker daemon config templates
-  template:
-    src: daemon.json
-    dest: /etc/docker/
-    backup: yes
-
-- name: Install Fluent-bit docker driver
-  shell: docker plugin install grafana/loki-docker-driver:{{ loki_version }} --alias loki --grant-all-permissions
-  ignore_errors: true
-
-- name: config docker
+- name: Configure docker daemon to send containers log to fluent-bit
   template:
     src: daemon.json
     dest: /etc/docker/

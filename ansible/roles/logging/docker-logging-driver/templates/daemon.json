@@ -1,0 +1,11 @@
+{
+  "debug" : true,
+  "log-driver": "fluentd",
+  "log-opts": {
+      "fluentd-address": "localhost:24224",
+      "cache-max-size": "256m",
+      "cache-max-file": "5",
+      "labels": "job=dockerlogs,server={{ ansible_host }},{% raw %}container_name={{.Name}},image_name={{.ImageName}}{% endraw %}",
+      "tag": "{{ ansible_host }}/{% raw %}{{.ImageName}}/{{.Name}}/{{.ID}}{% endraw %}"
+  }
+}

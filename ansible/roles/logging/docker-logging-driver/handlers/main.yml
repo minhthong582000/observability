@@ -1,2 +1,24 @@
 ---
-# handlers file for ansible/roles/logging/docker-logging-driver
+# handlers file for roles/docker
+- name: restart docker
+  command: /bin/true
+  notify:
+    - Docker | reload systemd
+    - Docker | restart docker
+    - Docker | wait for docker
+
+- name: Docker | reload systemd
+  systemd:
+    daemon_reload: true
+
+- name: Docker | restart docker
+  service:
+    name: docker
+    state: restarted
+
+- name: Docker | wait for docker
+  command: "/usr/bin/docker images"
+  register: docker_ready
+  retries: 20
+  delay: 1
+  until: docker_ready.rc == 0
