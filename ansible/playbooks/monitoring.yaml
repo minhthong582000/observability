@@ -1,18 +1,21 @@
 ---
-# file: site.yml
-# - name: Ensure common things are installed/configured
-#   become: true
-#   hosts: all
-#   roles:
-#     - role: ../roles/common
-#       tags: common
-#     - role: ../roles/docker
-#       tags: docker
+- name: Ensure common things are installed/configured
+  become: true
+  hosts: all
+  vars_files:
+    - ../vars/docker.yaml
+  roles:
+    - role: ../roles/common
+      tags: common
+    - role: ../roles/docker
+      tags: docker
 
 - name: Opensearch installation & configuration
   hosts: os-cluster
   gather_facts: true
   become: true
+  vars_files:
+    - ../vars/opensearch.yaml
   roles:
     - role: ../roles/logging/opensearch/opensearch
       tags: opensearch
@@ -21,6 +24,19 @@
   hosts: dashboards
   gather_facts: true
   become: true
+  vars_files:
+    - ../vars/opensearch.yaml
   roles:
     - role: ../roles/logging/opensearch/dashboards
       tags: opensearch
+
+- name: Fluent-bit installation & configuration
+  become: true
+  hosts: all
+  vars_files:
+    - ../vars/fluent-bit.yaml
+  roles:
+    - role: ../roles/logging/fluent-bit
+      tags: fluent-bit
+    - role: ../roles/logging/docker-logging-driver
+      tags: fluent-bit
