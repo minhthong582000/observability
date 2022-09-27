@@ -1,0 +1,7 @@
+## Docker
+docker_compose_version: 1.29.2
+docker_users:
+  - ubuntu
+
+# Docker daemon options as a dict
+docker_daemon_options: {}

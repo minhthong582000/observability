@@ -1,0 +1,7 @@
+---
+# handlers file for roles/logging/fluent-bit
+- name: "Restart Fluentbit."
+  service:
+    name: "{{ fluentbit_svc_name }}"
+    daemon_reload: "{{ _override.changed | default(false) }}"
+    state: restarted
