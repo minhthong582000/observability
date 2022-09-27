@@ -1,0 +1,30 @@
+service_name: fluent-bit
+fb_user: fluent-bit
+config_dir: /etc/fluent-bit
+
+fluentbit_service_flush_seconds: 8
+fluentbit_service_log_level: info
+
+# Default filters
+fluentbit_filters: []
+
+fluentbit_inputs:
+  - Name: "forward"
+    Listen: "0.0.0.0"
+    Port: "24224"
+
+fluentbit_outputs:
+  - Name: "opensearch"
+    Match: "*"
+    Host: "os0"
+    Port: "9200"
+    tls: "On"
+    tls.verify: "off"
+    HTTP_user: "admin"
+    HTTP_Passwd: "admin"
+    Logstash_Format: "True"
+    Logstash_Prefix: "fluentbit"
+    Suppress_Type_Name: "On"
+    Index: "fluentbit"
+    Type: "docker"
+    net.dns.mode: "TCP"

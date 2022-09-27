@@ -1,0 +1,102 @@
+---
+# tasks file for roles/logging/fluent-bit
+- name: Create fluent-bit user
+  user:
+    name: "{{ fb_user }}"
+    state: present
+    shell: /bin/false
+    create_home: false
+
+- name: "Install Fluentbit prerequisites."
+  apt:
+    name:
+      - apt-transport-https
+      - curl
+      - gnupg
+    state: present
+    update_cache: yes
+    cache_valid_time: 3600
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: "Add Fluentbit key."
+  apt_key:
+    url: "{{ fluentbit_apt_key_url }}"
+    keyring: "{{ fluentbit_apt_key_path | default(omit) }}"
+    state: present
+
+- name: "Add Fluentbit repository."
+  apt_repository:
+    repo: |
+      deb [signed-by={{ fluentbit_apt_key_path }}] {{ fluentbit_apt_repos_url }}
+      {{ ansible_distribution_release | lower }} {{ fluentbit_apt_repos_component }}
+    filename: fluentbit
+    state: present
+
+- name: "Get installed Fluentbit version."
+  command: dpkg-query --showformat='${Version}' --show {{ fluentbit_pkg_name }}
+  register: fluentbit_pkg_installed_version
+  failed_when: false
+  changed_when: false
+  check_mode: false
+
+- name: Create fluent-bit configuration directory
+  file:
+    path: "{{ config_dir }}"
+    state: directory
+    owner: "{{ fb_user }}"
+    group: "{{ fb_user }}"
+    mode: 0700
+
+- name: "Install Fluentbit."
+  apt:
+    name: "{{ fluentbit_pkg_name }}{% if fluentbit_pkg_version is defined and fluentbit_pkg_version != '' %}={{ fluentbit_pkg_version }}{% endif %}"
+    update_cache: true
+    state: present
+  notify: "Restart Fluentbit."
+
+- name: "Enable Fluentbit service."
+  service:
+    name: "{{ fluentbit_svc_name }}"
+    enabled: true
+
+- name: "Create needed directory."
+  file:
+    path: "/etc/systemd/system/{{ fluentbit_svc_name }}.service.d"
+    state: directory
+    mode: 0755
+  when: fluentbit_svc_limit_open_files is defined
+
+- name: "Override systemd configuration if needed."
+  template:
+    src: fluent-bit-svc-override.conf
+    dest: "/etc/systemd/system/{{ fluentbit_svc_name }}.service.d/override.conf"
+    mode: 0644
+  when: fluentbit_svc_limit_open_files is defined
+  notify: "Restart Fluentbit."
+
+- name: "Delete override systemd configuration if needed."
+  file:
+    path: "/etc/systemd/system/{{ fluentbit_svc_name }}.service.d/override.conf"
+    state: absent
+  when: fluentbit_svc_limit_open_files is not defined
+  notify: "Restart Fluentbit."
+
+- name: Copy templates to fluent-bit installation directory
+  template:
+    src: "{{ item }}"
+    dest: "{{ config_dir }}/"
+    owner: "{{ fb_user }}"
+    group: "{{ fb_user }}"
+    mode: 0700
+  loop:
+    - fluent-bit.conf
+  notify: "Restart Fluentbit."
+
+- name: Source additional fluent-bit conf
+  template:
+    src: "{{ item.template }}"
+    dest: "{{ config_dir }}/{{ item.name }}"
+    mode: 0700
+  with_items: "{{ fluentbit_additional_conf_files }}"
+  when: fluentbit_additional_conf_files | length > 0
+  notify: "Restart Fluentbit."
