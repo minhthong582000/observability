@@ -29,7 +29,7 @@
 - name: Dashboards Install | Copy Configuration File
   template:
     src: opensearch_dashboards.yml
-    dest: "{{os_conf_dir}}/opensearch_dashboards.yml"
+    dest: "{{ os_conf_dir }}/opensearch_dashboards.yml"
     owner: "{{ os_dashboards_user }}"
     group: "{{ os_dashboards_user }}"
     mode: 0644

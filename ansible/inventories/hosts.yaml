@@ -8,16 +8,16 @@ opensearch:
     os-cluster:
       hosts:
         os0:
-          ansible_host: 54.227.20.111
-          ip: 172.31.23.244
+          ansible_host: 18.233.167.56
+          ip: 172.31.83.4
           roles: data,master
         os1:
-          ansible_host: 54.227.44.3
-          ip: 172.31.27.43
+          ansible_host: 18.206.246.243
+          ip: 172.31.85.25
           roles: data,ingest
         os2:
-          ansible_host: 34.229.166.103
-          ip: 172.31.30.40
+          ansible_host: 100.27.24.105
+          ip: 172.31.88.47
           roles: data,ingest
     master:
       hosts:

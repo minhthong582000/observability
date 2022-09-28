@@ -20,8 +20,8 @@ fluentbit_outputs:
     Port: "9200"
     tls: "On"
     tls.verify: "off"
-    HTTP_user: "admin"
-    HTTP_Passwd: "admin"
+    HTTP_user: logstash
+    HTTP_Passwd: "{{ logstash_password }}"
     Logstash_Format: "True"
     Logstash_Prefix: "fluentbit"
     Suppress_Type_Name: "On"

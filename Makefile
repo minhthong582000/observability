@@ -10,7 +10,7 @@ terraform:
 	make -C terraform
 
 wait_for_instances_startup:
-	sleep 10
+	sleep 15
 
 clean:
 	rm -rf /tmp/opensearch-nodecerts
